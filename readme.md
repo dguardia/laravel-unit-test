@@ -1,5 +1,61 @@
 <p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
 
+# Laravel with Database and Heroku Setup Text Commands
+step #1:    laravel new   or
+            composer global require laravel/installer
+
+            The reson for that is when installed with laravel and having multiple installations in the same
+            parent folder it wont read the key. using composer helped to solve the problem sort of.
+
+step# #2: sudo apt-get install php-sqlite3
+step #3: touch database/database.sqlite
+         replace DB_DATABASE to
+         DB_DATABASE:$PWD/database/database.sqlite
+
+step# #4: add to config/database.php
+
+top:
+$heroku_db_url = parse_url(env('DATABASE_URL', "postgres://forge:forge@localhost:5432/forge"));
+
+inside the list of databases:
+
+'pg-heroku' => [
+'driver' => 'pgsql',
+'host' => $heroku_db_url['host'],
+'database' => substr($heroku_db_url['path'], 1),
+'username' => $heroku_db_url['user'],
+'password' => $heroku_db_url['pass'],
+'charset' => 'utf8',
+'prefix' => '',
+'schema' => 'public',
+],
+
+Continue commands....
+step #5: php artisan migrate
+step #6: php artisan make:auth
+
+step #7 : git init
+step #8: echo web: vendor/bin/heroku-php-apache2 public/ > Procfile
+step #9: app_name=is601b
+step #10: heroku apps:create $app_name
+step #11: heroku addons:create heroku-postgresql:hobby-dev --app $app_name
+step #12: heroku config:set APP_KEY=$(php artisan --no-ansi key:generate --show)
+step #13: heroku config:set APP_LOG=errorlog
+step #14: heroku config:set APP_ENV=development APP_DEBUG=true APP_LOG_LEVEL=debug
+step #15: heroku config:set DB_CONNECTION=pg-heroku
+step #16: git push heroku master
+step #17: heroku run php artisan migrate
+
+
+
+
+
+
+
+
+
+
+
 <p align="center">
 <a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
